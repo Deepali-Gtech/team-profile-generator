@@ -15,12 +15,12 @@ function init() {
 
 function addEmployees() {
     inquirer.prompt([{
-        message: "What is team member's name?",
+        message: "What is employee's name?",
         name: "name"
     },
     {
         type: "list",
-        message: "What is team member's role?",
+        message: "What is employee's role?",
         choices: [
             "Engineer",
             "Intern",
@@ -29,11 +29,11 @@ function addEmployees() {
         name: "role"
     },
     {
-        message: "What is team member's id",
+        message: "What is employee's id",
         name: "id"
     },
     {
-        message: "What is team member's email address",
+        message: "What is employee's email address",
         name: "email"
     }])
         .then(function ({ name, role, id, email }) {
@@ -46,7 +46,7 @@ function addEmployees() {
                 employeesRole = "office phone number";
             }
             inquirer.prompt([{
-                message: `What is team member's ${employeesRole}`,
+                message: `What is employee's ${employeesRole}`,
                 name: "employeesRole"
             },
             {
@@ -91,8 +91,8 @@ function generateHTML() {
         <title>Team Profile</title>
     </head>
     <body>
-        <nav class="navbar navbar-dark bg-dark mb-5">
-            <span class="navbar-brand mb-0 h1 w-100 text-center">My Team</span>
+        <nav class="navbar navbar-light bg-light mb-5">
+            <span class="navbar-brand mb-0 h1 w-100 text-center">Team Profile</span>
         </nav>
         <div class="container">
             <div class="row">`;
