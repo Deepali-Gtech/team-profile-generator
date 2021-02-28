@@ -9,7 +9,7 @@ This will build a Node.js command-line application that takes in information abo
 https://drive.google.com/file/d/149FhahB9uUric8w79i1KUT9N9bV6oCAb/view
 
 ## Below is the screen short for the generate html 
-![Website](./assets/html-page.png))
+![Website](./assets/html-page.png)
 
 
 ## Below is the screen short for terminal
