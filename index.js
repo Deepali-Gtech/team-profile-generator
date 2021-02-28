@@ -120,7 +120,7 @@ function generateHTML() {
             <ul class="list-group list-group-flush">
                 <li class="list-group-item">ID: ${employee.getId()}</li>
                 <li class="list-group-item">Email Address: ${employee.getEmail()}</li>
-                <li class="list-group-item">GitHub: ${employee.getGithub()}</li>
+                <li class="list-group-item">GitHub: <a href="https://github.com/${employee.getGithub()}">https://github.com/${employee.getGithub()}</a></li>
             </ul>
             </div>
         </div>`;
