@@ -4,29 +4,62 @@ const engineer = require("./lib/engineer");
 const intern = require("./lib/intern");
 const manager = require("./lib/manager");
 
-
 const employees = [];
 
 function init() {
-    generateHTML();
-    addEmployees();
-}
-
-
-function addEmployees() {
     inquirer.prompt([{
-        message: "What is employee's name?",
+        message: "What is manager's name?",
         name: "name"
     },
     {
-        type: "list",
-        message: "What is employee's role?",
-        choices: [
-            "Engineer",
-            "Intern",
-            "Manager"
-        ],
-        name: "role"
+        message: "What is manager's id",
+        name: "id"
+    },
+    {
+        message: "What is manager's email address",
+        name: "email"
+    },
+    {
+        message: "What is manager's office phone number",
+        name: "officeNumber"
+    }
+    ])
+        .then(function ({ name, id, email, officeNumber }) {
+            const newManager = new manager(name, id, email, officeNumber);
+            employees.push(newManager);
+            addEmployees();
+        });
+}
+
+function addEmployees() {
+    inquirer.prompt([
+        {
+            type: "list",
+            message: "Do you like to add more employees?",
+            choices: [
+                "Intern",
+                "Engineer",
+                "None"
+            ],
+            name: "employeeRole"
+        }
+    ])
+        .then(function ({ employeeRole }) {
+            if (employeeRole === "None") {
+                generateHTML();
+            }
+            else {
+                addEmployee(employeeRole, function () {
+                    addEmployees();
+                });
+            }
+        });
+}
+
+function addEmployee(employeeRole, callback) {
+    inquirer.prompt([{
+        message: "What is employee's name?",
+        name: "name"
     },
     {
         message: "What is employee's id",
@@ -36,52 +69,34 @@ function addEmployees() {
         message: "What is employee's email address",
         name: "email"
     }])
-        .then(function ({ name, role, id, email }) {
-            let employeesRole = "";
-            if (role === "Engineer") {
-                employeesRole = "GitHub username";
-            } else if (role === "Intern") {
-                employeesRole = "school name";
+        .then(function ({ name, id, email }) {
+            let employeesQuestion = "";
+            if (employeeRole === "Engineer") {
+                employeesQuestion = "GitHub username";
             } else {
-                employeesRole = "office phone number";
+                employeesQuestion = "school name";
             }
+
             inquirer.prompt([{
-                message: `What is employee's ${employeesRole}`,
-                name: "employeesRole"
-            },
-            {
-                type: "list",
-                message: "Do you like to add more employees?",
-                choices: [
-                    "yes",
-                    "no"
-                ],
-                name: "moreEmployees"
-            }])
-                .then(function ({ employeesRole, moreEmployees }) {
+                message: `What is employee's ${employeesQuestion}`,
+                name: "employeesAnswer"
+            }
+            ])
+                .then(function ({ employeesAnswer }) {
                     let newEmployee;
-                    if (role === "Engineer") {
-                        newEmployee = new engineer(name, id, email, employeesRole);
-                    } else if (role === "Intern") {
-                        newEmployee = new intern(name, id, email, employeesRole);
-                    } else {
-                        newEmployee = new manager(name, id, email, employeesRole);
+                    if (employeeRole === "Engineer") {
+                        newEmployee = new engineer(name, id, email, employeesAnswer);
+                    } else if (employeeRole === "Intern") {
+                        newEmployee = new intern(name, id, email, employeesAnswer);
                     }
                     employees.push(newEmployee);
-                    addHtml(newEmployee).then(function () {
-                        if (moreEmployees === "yes") {
-                            addEmployees();
-                        } else {
-                            endHtml();
-                        }
-                    });
-
+                    callback();
                 });
         });
 
 }
 function generateHTML() {
-    const html = `<!DOCTYPE html>
+    let html = `<!DOCTYPE html>
     <html lang="en">
     <head>
         <meta charset="UTF-8">
@@ -96,81 +111,50 @@ function generateHTML() {
         </nav>
         <div class="container">
             <div class="row">`;
-    fs.writeFile("team.html", html, function(err) {
-        if (err) { console.log(err); }
-    });
-    console.log("build");
-}
-function addHtml(teamMate) {
-    return new Promise(function(resolve, reject) {
-        const name = teamMate.getName();
-        const role = teamMate.getRole();
-        const id = teamMate.getId();
-        const email = teamMate.getEmail();
-        let data = "";
-        if (role === "Engineer") {
-            const gitHub = teamMate.getGithub();
-            data = `<div class="col-6">
+
+    employees.forEach(employee => {
+        if (employee.getRole() === "Engineer") {
+            html += `<div class="col-6">
             <div class="card mx-auto mb-3" style="width: 18rem">
-            <h5 class="card-header">${name}<br /><br />Engineer</h5>
+            <h5 class="card-header">${employee.getName()}<br /><br />Engineer</h5>
             <ul class="list-group list-group-flush">
-                <li class="list-group-item">ID: ${id}</li>
-                <li class="list-group-item">Email Address: ${email}</li>
-                <li class="list-group-item">GitHub: ${gitHub}</li>
+                <li class="list-group-item">ID: ${employee.getId()}</li>
+                <li class="list-group-item">Email Address: ${employee.getEmail()}</li>
+                <li class="list-group-item">GitHub: ${employee.getGithub()}</li>
             </ul>
             </div>
         </div>`;
-        } else if (role === "Intern") {
-            const school = teamMate.getSchool();
-            data = `<div class="col-6">
+        } else if (employee.getRole() === "Intern") {
+            html += `<div class="col-6">
             <div class="card mx-auto mb-3" style="width: 18rem">
-            <h5 class="card-header">${name}<br /><br />Intern</h5>
+            <h5 class="card-header">${employee.getName()}<br /><br />Intern</h5>
             <ul class="list-group list-group-flush">
-                <li class="list-group-item">ID: ${id}</li>
-                <li class="list-group-item">Email Address: ${email}</li>
-                <li class="list-group-item">School: ${school}</li>
+                <li class="list-group-item">ID: ${employee.getId()}</li>
+                <li class="list-group-item">Email Address: ${employee.getEmail()}</li>
+                <li class="list-group-item">School: ${employee.getSchool()}</li>
             </ul>
             </div>
         </div>`;
         } else {
-            const officePhone = teamMate.getOfficeNumber();
-            data = `<div class="col-6">
+            html += `<div class="col-6">
             <div class="card mx-auto mb-3" style="width: 18rem">
-            <h5 class="card-header">${name}<br /><br />Manager</h5>
+            <h5 class="card-header">${employee.getName()}<br /><br />Manager</h5>
             <ul class="list-group list-group-flush">
-                <li class="list-group-item">ID: ${id}</li>
-                <li class="list-group-item">Email Address: ${email}</li>
-                <li class="list-group-item">Office Phone: ${officePhone}</li>
+                <li class="list-group-item">ID: ${employee.getId()}</li>
+                <li class="list-group-item">Email Address: ${employee.getEmail()}</li>
+                <li class="list-group-item">Office Phone: ${employee.getOfficeNumber()}</li>
             </ul>
             </div>
         </div>`
         }
-        console.log("adding more teammate");
-        fs.appendFile("team.html", data, function (err) {
-            if (err) { return reject(err); };
-            return resolve();
-        });
-    });
-    
-            
-    
-        
-    
-    
-}
-
-function endHtml() {
-    const html = ` </div>
-    </div>
-    
+    })
+    html += ` </div>
+    </div>   
 </body>
 </html>`;
-
-    fs.appendFile("team.html", html, function (err) {
-        if (err) { console.log(err); };
+    fs.writeFile("team.html", html, (err) => {
+        if (err) { console.log(err); }
     });
-    console.log("end");
 }
-
 
 init();
