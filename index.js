@@ -119,7 +119,7 @@ function generateHTML() {
             <h5 class="card-header">${employee.getName()}<br /><br />Engineer</h5>
             <ul class="list-group list-group-flush">
                 <li class="list-group-item">ID: ${employee.getId()}</li>
-                <li class="list-group-item">Email Address: ${employee.getEmail()}</li>
+                <li class="list-group-item">Email Address: <a href="mailto:${employee.getEmail()}">${employee.getEmail()}</a></li>
                 <li class="list-group-item">GitHub: <a href="https://github.com/${employee.getGithub()}">https://github.com/${employee.getGithub()}</a></li>
             </ul>
             </div>
@@ -130,7 +130,7 @@ function generateHTML() {
             <h5 class="card-header">${employee.getName()}<br /><br />Intern</h5>
             <ul class="list-group list-group-flush">
                 <li class="list-group-item">ID: ${employee.getId()}</li>
-                <li class="list-group-item">Email Address: ${employee.getEmail()}</li>
+                <li class="list-group-item">Email Address: <a href="mailto:${employee.getEmail()}">${employee.getEmail()}</a></li>
                 <li class="list-group-item">School: ${employee.getSchool()}</li>
             </ul>
             </div>
@@ -141,7 +141,7 @@ function generateHTML() {
             <h5 class="card-header">${employee.getName()}<br /><br />Manager</h5>
             <ul class="list-group list-group-flush">
                 <li class="list-group-item">ID: ${employee.getId()}</li>
-                <li class="list-group-item">Email Address: ${employee.getEmail()}</li>
+                <li class="list-group-item">Email Address: <a href="mailto:${employee.getEmail()}">${employee.getEmail()}</a></li>
                 <li class="list-group-item">Office Phone: ${employee.getOfficeNumber()}</li>
             </ul>
             </div>
